@@ -16,7 +16,7 @@ LABEL maintainer="development@minddoc.com"
 RUN apk update\
  && apk upgrade\
  && apk add jq\
- && apk add curl
+ && apk add curl\
  && npm install -g yo generator-hubot@next\
  && rm -rf /var/cache/apk/*
 
