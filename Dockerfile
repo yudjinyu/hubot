@@ -42,6 +42,8 @@ RUN yo hubot\
 ARG HUBOT_VERSION="3.3.2"
 RUN jq --arg HUBOT_VERSION "$HUBOT_VERSION" '.dependencies.hubot = $HUBOT_VERSION' package.json > /tmp/package.json\
  && mv /tmp/package.json .
+
+# check argo
 RUN curl -sLO https://github.com/argoproj/argo/releases/download/v3.0.2/argo-linux-amd64.gz
 RUN gunzip argo-linux-amd64.gz 
 RUN chmod +x argo-linux-amd64
