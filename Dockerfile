@@ -26,7 +26,12 @@ RUN addgroup -g 501 hubot\
 ENV HOME /home/hubot
 WORKDIR $HOME
 COPY entrypoint.sh ./
+
+RUN curl -sLO https://github.com/argoproj/argo/releases/download/v3.0.2/argo-linux-amd64.gz
+RUN gunzip argo-linux-amd64.gz 
+
 RUN chown -R hubot:hubot .
+RUN mv ./argo-linux-amd64 /usr/local/bin/argo
 USER hubot
 
 # Install hubot version HUBOT_VERSION
@@ -43,11 +48,7 @@ ARG HUBOT_VERSION="3.3.2"
 RUN jq --arg HUBOT_VERSION "$HUBOT_VERSION" '.dependencies.hubot = $HUBOT_VERSION' package.json > /tmp/package.json\
  && mv /tmp/package.json .
 
-# check argo
-RUN curl -sLO https://github.com/argoproj/argo/releases/download/v3.0.2/argo-linux-amd64.gz
-RUN gunzip argo-linux-amd64.gz 
-RUN chmod -R a+rwX ./argo-linux-amd64
-RUN mv ./argo-linux-amd64 /usr/local/bin/argo
+
 
 #EXPOSE 80
 
