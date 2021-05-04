@@ -32,8 +32,8 @@ RUN addgroup -g 501 hubot\
 WORKDIR $HOME
 COPY entrypoint.sh ./
 
-RUN chown -R hubot:hubot . \
-&& chmod -R hubot:hubot /usr/local/bin/kubectl 
+RUN chown -R hubot:hubot . 
+RUN chown -R hubot:hubot /usr/local/bin/kubectl 
 
 RUN mv ./argo-linux-amd64 /usr/local/bin/argo
 USER hubot
