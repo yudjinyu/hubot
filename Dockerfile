@@ -10,15 +10,15 @@
 
 FROM node:lts-alpine
 
+RUN mkdir /home/hubot
 ENV HOME /home/hubot
 
 # Install hubot dependencies
 RUN apk add --update ca-certificates \
  && apk add --update -t deps curl \
  && curl -L https://storage.googleapis.com/kubernetes-release/release/v$KUBE_VERSION/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
- && curl -L https://github.com/argoproj/argo/releases/download/v3.0.2/argo-linux-amd64.gz \
- && gunzip ./argo-linux-amd64.gz \
- && mv ./argo-linux-amd64 $HOME \
+ && curl -L https://github.com/argoproj/argo/releases/download/v3.0.2/argo-linux-amd64.gz -o $HOME/argo-linux-amd64.gz\
+ && gunzip $HOME/argo-linux-amd64.gz \
  && apk add jq\
  && npm install -g yo generator-hubot\
  && npm install hubot-scripts \
