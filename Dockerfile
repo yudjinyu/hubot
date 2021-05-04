@@ -16,6 +16,8 @@ LABEL maintainer="development@minddoc.com"
 RUN apk add --update ca-certificates \
  && apk add --update -t deps curl \
  && curl -L https://storage.googleapis.com/kubernetes-release/release/v$KUBE_VERSION/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
+ && curl -L https://github.com/argoproj/argo/releases/download/v3.0.2/argo-linux-amd64.gz -o /home/hubot \
+ && gunzip /home/hubot/argo-linux-amd64.gz \
  && apk add jq\
  && npm install -g yo generator-hubot\
  && npm install hubot-scripts \
@@ -29,9 +31,6 @@ RUN addgroup -g 501 hubot\
 ENV HOME /home/hubot
 WORKDIR $HOME
 COPY entrypoint.sh ./
-
-RUN curl -sLO https://github.com/argoproj/argo/releases/download/v3.0.2/argo-linux-amd64.gz
-RUN gunzip argo-linux-amd64.gz 
 
 RUN chown -R hubot:hubot . \
 && chmod -R hubot:hubot /usr/local/bin/kubectl 
