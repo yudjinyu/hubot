@@ -13,11 +13,14 @@ FROM node:lts-alpine
 LABEL maintainer="development@minddoc.com"
 
 # Install hubot dependencies
-RUN apk update\
- && apk upgrade\
+RUN apk add --update ca-certificates \
+ && apk add --update -t deps curl \
+ && curl -L https://storage.googleapis.com/kubernetes-release/release/v$KUBE_VERSION/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
  && apk add jq\
- && apk add curl\
- && npm install -g yo generator-hubot@next\
+ && npm install -g yo generator-hubot\
+ && npm install hubot-scripts \
+ && npm install hubot-slack --save \
+ && apk del --purge deps \
  && rm -rf /var/cache/apk/*
 
 # Create hubot user with privileges
@@ -30,12 +33,14 @@ COPY entrypoint.sh ./
 RUN curl -sLO https://github.com/argoproj/argo/releases/download/v3.0.2/argo-linux-amd64.gz
 RUN gunzip argo-linux-amd64.gz 
 
-RUN chown -R hubot:hubot .
+RUN chown -R hubot:hubot . \
+&& chmod -R hubot:hubot /usr/local/bin/kubectl 
+
 RUN mv ./argo-linux-amd64 /usr/local/bin/argo
 USER hubot
 
 # Install hubot version HUBOT_VERSION
-ENV HUBOT_NAME "robot"
+ENV HUBOT_NAME "rbot"
 ENV HUBOT_OWNER "MindDoc <development@minddoc.com>"
 ENV HUBOT_DESCRIPTION "A robot may not harm humanity, or, by inaction, allow humanity to come to harm"
 RUN yo hubot\
@@ -48,9 +53,7 @@ ARG HUBOT_VERSION="3.3.2"
 RUN jq --arg HUBOT_VERSION "$HUBOT_VERSION" '.dependencies.hubot = $HUBOT_VERSION' package.json > /tmp/package.json\
  && mv /tmp/package.json .
 
-
-
-#EXPOSE 80
+EXPOSE 8080
 
 ENTRYPOINT ["./entrypoint.sh"]
 
